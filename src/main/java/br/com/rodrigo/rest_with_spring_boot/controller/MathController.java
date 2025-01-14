@@ -1,5 +1,6 @@
 package br.com.rodrigo.rest_with_spring_boot.controller;
 
+import br.com.rodrigo.rest_with_spring_boot.exception.UnsupportedMathOperation;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,7 +11,8 @@ public class MathController {
     @GetMapping("/soma/{primeiroNumero}/{segundoNumero}")
     public Double soma(@PathVariable String primeiroNumero, @PathVariable String segundoNumero) {
         if (!isNumerico(primeiroNumero) || !isNumerico(segundoNumero)) {
-            throw new RuntimeException();
+            throw new UnsupportedMathOperation("Por favor, insira apenas valores numéricos");
+
         }
         return converterParaDouble(primeiroNumero) + converterParaDouble(segundoNumero);
     }
