@@ -1,1 +1,18 @@
-spring.application.name=rest-with-spring-boot
+spring:
+  application:
+    name: rest-with-spring-boot
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/rest_pessoas_api
+    username: root
+    password: ""
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+      format_sql: true
+    hibernate:
+      ddl-auto: update
+
+server:
+  port: 8081
