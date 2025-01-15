@@ -12,9 +12,54 @@ public class MathController {
     public Double soma(@PathVariable String primeiroNumero, @PathVariable String segundoNumero) {
         if (!isNumerico(primeiroNumero) || !isNumerico(segundoNumero)) {
             throw new UnsupportedMathOperation("Por favor, insira apenas valores numéricos");
-
         }
+
         return converterParaDouble(primeiroNumero) + converterParaDouble(segundoNumero);
+    }
+
+    @GetMapping("/subtracao/{primeiroNumero}/{segundoNumero}")
+    public Double subtracao(@PathVariable String primeiroNumero, @PathVariable String segundoNumero) {
+        if (!isNumerico(primeiroNumero) || !isNumerico(segundoNumero)) {
+            throw new UnsupportedMathOperation("Por favor, insira apenas valores numéricos");
+        }
+
+        return converterParaDouble(primeiroNumero) - converterParaDouble(segundoNumero);
+    }
+
+    @GetMapping("/multiplicacao/{primeiroNumero}/{segundoNumero}")
+    public Double multiplicacao(@PathVariable String primeiroNumero, @PathVariable String segundoNumero) {
+        if (!isNumerico(primeiroNumero) || !isNumerico(segundoNumero)) {
+            throw new UnsupportedMathOperation("Por favor, insira apenas valores numéricos");
+        }
+
+        return converterParaDouble(primeiroNumero) * converterParaDouble(segundoNumero);
+    }
+
+    @GetMapping("/divisao/{primeiroNumero}/{segundoNumero}")
+    public Double divisao(@PathVariable String primeiroNumero, @PathVariable String segundoNumero) {
+        if (!isNumerico(primeiroNumero) || !isNumerico(segundoNumero)) {
+            throw new UnsupportedMathOperation("Por favor, insira apenas valores numéricos");
+        }
+
+        return converterParaDouble(primeiroNumero) * converterParaDouble(segundoNumero);
+    }
+
+    @GetMapping("/media/{primeiroNumero}/{segundoNumero}")
+    public Double media(@PathVariable String primeiroNumero, @PathVariable String segundoNumero) {
+        if (!isNumerico(primeiroNumero) || !isNumerico(segundoNumero)) {
+            throw new UnsupportedMathOperation("Por favor, insira apenas valores numéricos");
+        }
+
+        return (converterParaDouble(primeiroNumero) * converterParaDouble(segundoNumero)) / 2;
+    }
+
+    @GetMapping("/raiz_quadrada/{numero}")
+    public Double raizQuadrada(@PathVariable String numero) {
+        if (!isNumerico(numero)) {
+            throw new UnsupportedMathOperation("Por favor, insira apenas valores numéricos");
+        }
+
+        return (Math.sqrt(converterParaDouble(numero)));
     }
 
     private Double converterParaDouble(String numeroString) {
@@ -34,4 +79,5 @@ public class MathController {
         //verifica se ele bate com o valor numerico (o regex abaixo verifica se o valor é numerico)
         return numero.matches("^-?\\d+(\\.\\d+)?$");
     }
+
 }
