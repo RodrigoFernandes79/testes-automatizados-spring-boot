@@ -15,16 +15,26 @@ public class Pessoa {
     private String ultimoNome;
     private String endereco;
     private String genero;
+    private String email;
 
     public Pessoa() {
     }
 
-    public Pessoa(Long id, String primeiroNome, String ultimoNome, String endereco, String genero) {
+    public Pessoa(String primeiroNome, String ultimoNome, String endereco, String genero, String email) {
+        this.primeiroNome = primeiroNome;
+        this.ultimoNome = ultimoNome;
+        this.endereco = endereco;
+        this.genero = genero;
+        this.email = email;
+    }
+
+    public Pessoa(Long id, String primeiroNome, String ultimoNome, String endereco, String genero, String email) {
         this.id = id;
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
         this.endereco = endereco;
         this.genero = genero;
+        this.email = email;
     }
 
     public Long getId() {
@@ -65,6 +75,14 @@ public class Pessoa {
 
     public void setGenero(String genero) {
         this.genero = genero;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
