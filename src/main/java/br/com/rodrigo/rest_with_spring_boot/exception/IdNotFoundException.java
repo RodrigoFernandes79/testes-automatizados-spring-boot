@@ -1,7 +1,7 @@
 package br.com.rodrigo.rest_with_spring_boot.exception;
 
-public class UnsupportedMathOperation extends RuntimeException {
-    public UnsupportedMathOperation(String message) {
+public class IdNotFoundException extends RuntimeException {
+    public IdNotFoundException(String message) {
         super(message);
     }
 }

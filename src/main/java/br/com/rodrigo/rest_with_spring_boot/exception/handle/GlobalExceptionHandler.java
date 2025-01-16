@@ -1,6 +1,6 @@
 package br.com.rodrigo.rest_with_spring_boot.exception.handle;
 
-import br.com.rodrigo.rest_with_spring_boot.exception.UnsupportedMathOperation;
+import br.com.rodrigo.rest_with_spring_boot.exception.IdNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -12,8 +12,8 @@ import java.util.Date;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(UnsupportedMathOperation.class)
-    public ResponseEntity<ResponseError> unsupportedMathOperation(UnsupportedMathOperation e, WebRequest webRequest) {
+    @ExceptionHandler(IdNotFoundException.class)
+    public ResponseEntity<ResponseError> unsupportedMathOperation(IdNotFoundException e, WebRequest webRequest) {
 
         ResponseError error = new ResponseError(
                 new Date(),
