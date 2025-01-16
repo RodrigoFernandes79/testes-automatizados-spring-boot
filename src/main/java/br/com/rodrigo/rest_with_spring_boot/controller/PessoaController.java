@@ -39,5 +39,9 @@ public class PessoaController {
         return ResponseEntity.ok().body(pessoaService.atualizarPessoa(id, pessoa));
     }
 
+    @DeleteMapping("/{id}")
+    public void deletarPessoaPorId(@PathVariable Long id) {
+        pessoaService.deletarPessoa(id);
+    }
 
 }
