@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
                 e.getMessage(),
                 webRequest.getDescription(false)  //passa o endpoint mostrando o erro "uri=/soma/5.1/q"
         );
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 
 
