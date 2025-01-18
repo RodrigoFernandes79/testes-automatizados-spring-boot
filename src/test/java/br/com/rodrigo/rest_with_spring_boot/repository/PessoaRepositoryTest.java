@@ -4,7 +4,6 @@ import br.com.rodrigo.rest_with_spring_boot.model.Pessoa;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -106,12 +105,13 @@ class PessoaRepositoryTest {
 
         //Assert / then
         assertNotNull(pessoaAtualizada);
-        assertNotEquals("inaldinho@email.com",pessoaAtualizada.getEmail());
+        assertNotEquals("inaldinho@email.com", pessoaAtualizada.getEmail());
         assertNotEquals("Inaldinho", pessoaAtualizada.getPrimeiroNome());
         assertEquals("erudio@email.com", pessoaAtualizada.getEmail());
-        assertEquals("Erudio",pessoaAtualizada.getPrimeiroNome());
+        assertEquals("Erudio", pessoaAtualizada.getPrimeiroNome());
 
     }
+
     @Test
     @DisplayName("Deveria Deletar uma pessoa por id")
     void testDeletarPessoa() {
@@ -127,5 +127,19 @@ class PessoaRepositoryTest {
 
     }
 
+    //Testes Spring Data JPA custom query method Usando JPQL com named parameters
+    @Test
+    @DisplayName("Deveria Retornar uma pessoa quando buscar por nome e sobrenome")
+    void testJpql() {
+        //arrange / given
+        pessoaRepository.save(pessoa);
+        //act / when
+        Pessoa pessoaEncontrada = pessoaRepository.consultaPorNomeSobrenome("Inaldinho", "Silva");
+        //Assertions / then
+        assertNotNull(pessoaEncontrada);
+        assertEquals("Inaldinho", pessoaEncontrada.getPrimeiroNome());
+        assertEquals("Silva", pessoaEncontrada.getUltimoNome());
+
+    }
 
 }
