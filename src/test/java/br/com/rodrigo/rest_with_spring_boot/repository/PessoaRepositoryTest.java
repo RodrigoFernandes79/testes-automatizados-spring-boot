@@ -141,5 +141,19 @@ class PessoaRepositoryTest {
         assertEquals("Silva", pessoaEncontrada.getUltimoNome());
 
     }
+    //Testando Spring Data JPA custom Native query com Named parameters
+    @Test
+    @DisplayName("Deveria Retornar uma pessoa quando buscar por nome e sobrenome com SQL Nativo")
+    void testSqlNativo() {
+        //arrange / given
+        pessoaRepository.save(pessoa);
+        //act / when
+        Pessoa pessoaEncontrada = pessoaRepository.consultaSQLNativoPorNomeSobrenome("Inaldinho", "Silva");
+        //Assertions / then
+        assertNotNull(pessoaEncontrada);
+        assertEquals("Inaldinho", pessoaEncontrada.getPrimeiroNome());
+        assertEquals("Silva", pessoaEncontrada.getUltimoNome());
+
+    }
 
 }

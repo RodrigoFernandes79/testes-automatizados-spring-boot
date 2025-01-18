@@ -16,5 +16,10 @@ public interface PessoaRepository extends JpaRepository<Pessoa, Long> {
             @Param("primeiroNome") String primeiroNome,
             @Param("ultimoNome") String ultimoNome);
 
+    //Testando Spring Data JPA custom Native query com Named parameters
+    @Query(value = "SELECT * from pessoa p where p.primeiro_nome =:primeiroNome AND p.ultimo_nome =:ultimoNome", nativeQuery = true)
+    Pessoa consultaSQLNativoPorNomeSobrenome(
+            @Param("primeiroNome") String primeiroNome,
+            @Param("ultimoNome") String ultimoNome);
 
 }
