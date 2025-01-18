@@ -2,6 +2,7 @@ package br.com.rodrigo.rest_with_spring_boot.service;
 
 import br.com.rodrigo.rest_with_spring_boot.exception.EmailJaEncontradoException;
 import br.com.rodrigo.rest_with_spring_boot.exception.IdNotFoundException;
+import br.com.rodrigo.rest_with_spring_boot.exception.ListaDePessoasNaoEncontradaException;
 import br.com.rodrigo.rest_with_spring_boot.model.Pessoa;
 import br.com.rodrigo.rest_with_spring_boot.repository.PessoaRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +18,12 @@ public class PessoaService {
     private PessoaRepository pessoaRepository;
 
     public List<Pessoa> listarPessoas() {
-        return pessoaRepository.findAll();
+        List<Pessoa> pessoaList = pessoaRepository.findAll();
+        if (pessoaList.isEmpty()) {
+            throw new ListaDePessoasNaoEncontradaException("Não foi encontrado nenhum dado na lista de pessoas");
+        }
+
+        return pessoaList;
     }
 
     public Pessoa encontrarPessoaPorId(Long id) {
