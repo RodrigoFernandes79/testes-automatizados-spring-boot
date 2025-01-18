@@ -13,9 +13,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
@@ -58,10 +60,26 @@ class PessoaServiceTest {
         //ArgumentCaptor é como dizer:
         //"Quero ver EXATAMENTE o que foi perguntado para mim, para eu conferir se está certo."
         then(pessoaRepository).should().save(pessoaArgumentCaptor.capture());
-
         assertEquals(pessoa.getEmail(), pessoaArgumentCaptor.getValue().getEmail());
         assertEquals(pessoa.getEndereco(), pessoaArgumentCaptor.getValue().getEndereco());
         assertEquals(pessoa.getPrimeiroNome(), pessoaArgumentCaptor.getValue().getPrimeiroNome());
 
+    }
+
+    @Test
+    @DisplayName("Deveria Retornar lista de pessoas quando o metodo listarPessoas() for chamado")
+    void listarPessoas_cenario01() {
+        //Arrange / Given
+        List<Pessoa> pessoaList = new ArrayList<>();
+        pessoaList.add(pessoa);
+        given(pessoaRepository.findAll()).willReturn(pessoaList);
+        //Act / When
+       List<Pessoa> pessoasExpected = pessoaService.listarPessoas();
+       //Assert / Then
+        assertNotNull(pessoasExpected);
+        assertEquals(1, pessoasExpected.size());
+        assertEquals(pessoa.getPrimeiroNome(),pessoasExpected.get(0).getPrimeiroNome());
+        assertEquals(pessoa.getUltimoNome(),pessoasExpected.get(0).getUltimoNome());
+        assertEquals(pessoa.getEmail(),pessoasExpected.get(0).getEmail());
     }
 }
