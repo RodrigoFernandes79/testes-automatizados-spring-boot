@@ -1,6 +1,7 @@
 package br.com.rodrigo.rest_with_spring_boot.service;
 
 import br.com.rodrigo.rest_with_spring_boot.exception.EmailJaEncontradoException;
+import br.com.rodrigo.rest_with_spring_boot.exception.ListaDePessoasNaoEncontradaException;
 import br.com.rodrigo.rest_with_spring_boot.model.Pessoa;
 import br.com.rodrigo.rest_with_spring_boot.repository.PessoaRepository;
 import org.junit.jupiter.api.Assertions;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.mock;
 
 @ExtendWith(MockitoExtension.class)
 class PessoaServiceTest {
@@ -74,12 +76,23 @@ class PessoaServiceTest {
         pessoaList.add(pessoa);
         given(pessoaRepository.findAll()).willReturn(pessoaList);
         //Act / When
-       List<Pessoa> pessoasExpected = pessoaService.listarPessoas();
-       //Assert / Then
+        List<Pessoa> pessoasExpected = pessoaService.listarPessoas();
+        //Assert / Then
         assertNotNull(pessoasExpected);
         assertEquals(1, pessoasExpected.size());
-        assertEquals(pessoa.getPrimeiroNome(),pessoasExpected.get(0).getPrimeiroNome());
-        assertEquals(pessoa.getUltimoNome(),pessoasExpected.get(0).getUltimoNome());
-        assertEquals(pessoa.getEmail(),pessoasExpected.get(0).getEmail());
+        assertEquals(pessoa.getPrimeiroNome(), pessoasExpected.get(0).getPrimeiroNome());
+        assertEquals(pessoa.getUltimoNome(), pessoasExpected.get(0).getUltimoNome());
+        assertEquals(pessoa.getEmail(), pessoasExpected.get(0).getEmail());
+    }
+
+    @Test
+    @DisplayName("Deveria Retornar uma exceção quando o metodo listarPessoas não Retornar nada")
+    void listarPessoas_cenario02() {
+        //Arrange // Act
+        List<Pessoa> pessoaList = mock(ArrayList.class);
+        given(pessoaRepository.findAll()).willReturn(pessoaList);
+        given(pessoaList.isEmpty()).willReturn(true);
+        //Assert when && Act /then
+        assertThrows(ListaDePessoasNaoEncontradaException.class, () -> pessoaService.listarPessoas());
     }
 }
