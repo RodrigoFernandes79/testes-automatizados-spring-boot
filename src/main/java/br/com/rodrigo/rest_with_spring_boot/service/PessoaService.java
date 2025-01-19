@@ -50,7 +50,7 @@ public class PessoaService {
         pessoaEntity.setEndereco(pessoa.getEndereco());
         pessoaEntity.setGenero(pessoa.getGenero());
 
-        return pessoaEntity;
+        return pessoaRepository.save(pessoa);
     }
 
     public void deletarPessoa(Long id) {

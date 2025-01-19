@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.mock;
@@ -114,6 +115,21 @@ class PessoaServiceTest {
         //Act When && assert / Then
         assertThrows(IdNotFoundException.class, () -> pessoaService.encontrarPessoaPorId(id));
 
+    }
 
+    @Test
+    @DisplayName("Deveria atualizar os dados da pessoa quando o metodo atualizarPessoa for chamado")
+    void atualizarPessoa() {
+        //Arrange / Given
+        given(pessoaRepository.findById(anyLong())).willReturn(Optional.of(pessoa));
+        pessoa.setPrimeiroNome("Erudio");
+        pessoa.setEmail("erudio@email");
+        given(pessoaRepository.save(pessoa)).willReturn(pessoa);
+        //Act
+        Pessoa pessoaUpdated= pessoaService.atualizarPessoa(1L, pessoa);
+        //Assert / Then
+        assertNotNull(pessoaUpdated);
+        assertEquals(pessoa.getPrimeiroNome(), pessoaUpdated.getPrimeiroNome());
+        assertEquals(pessoa.getEmail(), pessoaUpdated.getEmail());
     }
 }
