@@ -132,5 +132,23 @@ class PessoaControllerTest {
                 .andExpect(jsonPath("$.email").value(pessoaAtualizada.getEmail())); // Verifica o email da pessoa
 
     }
+    @Test
+    @DisplayName("Deveria retornar status 404 Not Found quando o id nao for encontrado")
+    void atualizarPessoa_cenario02() throws Exception {
+        //Arrange / Given
+        Long id = 1L;
+        given(pessoaService.encontrarPessoaPorId(id)).willReturn(pessoa);
+        Pessoa pessoaAtualizada = new Pessoa("Erudio", "Silva",
+                "Outra rua qualquer", "masculino", "erudio@email.com");
+        given(pessoaService.atualizarPessoa(any(), any(Pessoa.class))).willThrow(IdNotFoundException.class);
+        //Act / when
+        var response = mockMvc.perform(put("/pessoas/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(pessoaJacksonTester.write(pessoaAtualizada).getJson()))
+
+                //Assertions / then
+                .andExpect(status().isNotFound());// Verifica o status HTTP 200
+
+    }
 
 }
