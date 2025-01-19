@@ -1,5 +1,6 @@
 package br.com.rodrigo.rest_with_spring_boot.controller;
 
+import br.com.rodrigo.rest_with_spring_boot.exception.IdNotFoundException;
 import br.com.rodrigo.rest_with_spring_boot.model.Pessoa;
 import br.com.rodrigo.rest_with_spring_boot.service.PessoaService;
 import org.junit.jupiter.api.BeforeEach;
@@ -95,6 +96,21 @@ class PessoaControllerTest {
                 .andExpect(jsonPath("$.email").value(pessoa.getEmail())); // Verifica o email da pessoa
 
         assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Deveria retornar status 404 Not Found quando o id nao existir")
+    void listarPessoaPorId_cenario02() throws Exception {
+        //Arrange / Given
+        Long id = 1L;
+        given(pessoaService.encontrarPessoaPorId(id)).willThrow(IdNotFoundException.class);
+        //Act / when
+        var response = mockMvc.perform(get("/pessoas/{id}", id))
+
+                //Assertions / then
+                .andExpect(status().isNotFound());// Verifica o status HTTP 404
+        
 
     }
 
