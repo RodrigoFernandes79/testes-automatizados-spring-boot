@@ -51,10 +51,11 @@ class PessoaControllerTest {
         given(pessoaService.criarPessoa(any(Pessoa.class))).willReturn(pessoa);
         //Act / when
         var response = mockMvc.perform(post("/pessoas")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(pessoaJacksonTester.write(pessoa).getJson()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(pessoaJacksonTester.write(pessoa).getJson()));
 
-                //Assertions / then
+        //Assertions / then
+        response
                 .andExpect(status().isCreated()) // Verifica o status HTTP 201
                 .andExpect(jsonPath("$.primeiroNome").value(pessoa.getPrimeiroNome())) // Verifica o campo "primeiroNome"
                 .andExpect(jsonPath("$.email").value(pessoa.getEmail())); // Verifica o campo "email"
@@ -70,9 +71,10 @@ class PessoaControllerTest {
         pessoaList.add(pessoa);
         given(pessoaService.listarPessoas()).willReturn(pessoaList);
         //Act / when
-        var response = mockMvc.perform(get("/pessoas"))
+        var response = mockMvc.perform(get("/pessoas"));
 
-                //Assertions / then
+        //Assertions / then
+        response
                 .andExpect(status().isOk()) // Verifica o status HTTP 200
                 .andExpect(jsonPath("$.size()").value(pessoaList.size())) // Verifica o tamanho da lista
                 .andExpect(jsonPath("$[0].primeiroNome").value(pessoa.getPrimeiroNome())) // Verifica o primeiro nome da pessoa
@@ -89,9 +91,10 @@ class PessoaControllerTest {
         Long id = 1L;
         given(pessoaService.encontrarPessoaPorId(id)).willReturn(pessoa);
         //Act / when
-        var response = mockMvc.perform(get("/pessoas/{id}", id))
+        var response = mockMvc.perform(get("/pessoas/{id}", id));
 
-                //Assertions / then
+        //Assertions / then
+        response
                 .andExpect(status().isOk())// Verifica o status HTTP 200
                 .andExpect(jsonPath("$.primeiroNome").value(pessoa.getPrimeiroNome())) // Verifica o primeiro nome da pessoa
                 .andExpect(jsonPath("$.email").value(pessoa.getEmail())); // Verifica o email da pessoa
@@ -107,9 +110,10 @@ class PessoaControllerTest {
         Long id = 1L;
         given(pessoaService.encontrarPessoaPorId(id)).willThrow(IdNotFoundException.class);
         //Act / when
-        var response = mockMvc.perform(get("/pessoas/{id}", id))
+        var response = mockMvc.perform(get("/pessoas/{id}", id));
 
-                //Assertions / then
+        //Assertions / then
+        response
                 .andExpect(status().isNotFound());// Verifica o status HTTP 404
 
     }
@@ -125,15 +129,17 @@ class PessoaControllerTest {
         given(pessoaService.atualizarPessoa(any(), any(Pessoa.class))).willReturn(pessoaAtualizada);
         //Act / when
         var response = mockMvc.perform(put("/pessoas/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(pessoaJacksonTester.write(pessoaAtualizada).getJson()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(pessoaJacksonTester.write(pessoaAtualizada).getJson()));
 
-                //Assertions / then
+        //Assertions / then
+        response
                 .andExpect(status().isOk())// Verifica o status HTTP 200
                 .andExpect(jsonPath("$.primeiroNome").value(pessoaAtualizada.getPrimeiroNome())) // Verifica o primeiro nome da pessoa
                 .andExpect(jsonPath("$.email").value(pessoaAtualizada.getEmail())); // Verifica o email da pessoa
 
     }
+
     @Test
     @DisplayName("Deveria retornar status 404 Not Found quando o id nao for encontrado")
     void atualizarPessoa_cenario02() throws Exception {
@@ -145,13 +151,14 @@ class PessoaControllerTest {
         given(pessoaService.atualizarPessoa(any(), any(Pessoa.class))).willThrow(IdNotFoundException.class);
         //Act / when
         var response = mockMvc.perform(put("/pessoas/{id}", id)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(pessoaJacksonTester.write(pessoaAtualizada).getJson()))
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(pessoaJacksonTester.write(pessoaAtualizada).getJson()));
 
-                //Assertions / then
-                .andExpect(status().isNotFound());// Verifica o status HTTP 200
+        //Assertions / then
+        response.andExpect(status().isNotFound());// Verifica o status HTTP 200
 
     }
+
     @Test
     @DisplayName("Deveria retornar status  no content quando deletar uma pessoa pelo id")
     void deletarPessoaPorId() throws Exception {
@@ -160,10 +167,10 @@ class PessoaControllerTest {
         given(pessoaService.encontrarPessoaPorId(id)).willReturn(pessoa);
         willDoNothing().given(pessoaService).deletarPessoa(anyLong());
         //Act / when
-        var response = mockMvc.perform(delete("/pessoas/{id}", id))
+        var response = mockMvc.perform(delete("/pessoas/{id}", id));
 
-                //Assertions / then
-                .andExpect(status().isNoContent());// Verifica o status HTTP 200
+        //Assertions / then
+        response.andExpect(status().isNoContent());// Verifica o status HTTP 200
 
     }
 
