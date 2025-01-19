@@ -1,6 +1,7 @@
 package br.com.rodrigo.rest_with_spring_boot.service;
 
 import br.com.rodrigo.rest_with_spring_boot.exception.EmailJaEncontradoException;
+import br.com.rodrigo.rest_with_spring_boot.exception.IdNotFoundException;
 import br.com.rodrigo.rest_with_spring_boot.exception.ListaDePessoasNaoEncontradaException;
 import br.com.rodrigo.rest_with_spring_boot.model.Pessoa;
 import br.com.rodrigo.rest_with_spring_boot.repository.PessoaRepository;
@@ -32,8 +33,6 @@ class PessoaServiceTest {
     private PessoaService pessoaService;
     @Mock
     private Pessoa pessoa;
-    @Mock
-    private Optional<Pessoa> pessoaOptional;
     @Captor
     private ArgumentCaptor<Pessoa> pessoaArgumentCaptor;
 
@@ -42,8 +41,7 @@ class PessoaServiceTest {
     @DisplayName("Deveria Retornar uma exception quando o email ja existir")
     void criarPessoa_cenario01() {
         //Arrange / given
-        given(pessoaRepository.findByEmail(pessoa.getEmail())).willReturn(pessoaOptional);
-        given(pessoaOptional.isPresent()).willReturn(true);
+        given(pessoaRepository.findByEmail(pessoa.getEmail())).willReturn(Optional.of(pessoa));
         //Act / When  Assertion / Then
         Assertions.assertThrows(EmailJaEncontradoException.class, () -> pessoaService.criarPessoa(pessoa));
 
@@ -53,9 +51,7 @@ class PessoaServiceTest {
     @DisplayName("Deveria salvar uma pessoa quando o email não existir")
     void criarPessoa_cenario02() {
         //Arrange / given
-        given(pessoaRepository.findByEmail(pessoa.getEmail())).willReturn(pessoaOptional);
-        given(pessoaOptional.isPresent()).willReturn(false);
-
+        given(pessoaRepository.findByEmail(pessoa.getEmail())).willReturn(Optional.empty());
         //Act / When
         pessoaService.criarPessoa(pessoa);
         //Assertion / Then
@@ -88,11 +84,36 @@ class PessoaServiceTest {
     @Test
     @DisplayName("Deveria Retornar uma exceção quando o metodo listarPessoas não Retornar nada")
     void listarPessoas_cenario02() {
-        //Arrange // Act
+        //Arrange // Given
         List<Pessoa> pessoaList = mock(ArrayList.class);
         given(pessoaRepository.findAll()).willReturn(pessoaList);
         given(pessoaList.isEmpty()).willReturn(true);
         //Assert when && Act /then
         assertThrows(ListaDePessoasNaoEncontradaException.class, () -> pessoaService.listarPessoas());
+    }
+
+    @Test
+    @DisplayName("Deveria Retornar uma pessoa quando o metodo encontrarPessoaPorId for chamado")
+    void encontrarPessoaPorId_cenario01() {
+        //Arrange / Given
+        Long id = 1L;
+        given(pessoaRepository.findById(id)).willReturn(Optional.of(pessoa));
+        //Act When
+        Pessoa pessoaExpected = pessoaService.encontrarPessoaPorId(id);
+        // assert / Then
+        assertNotNull(pessoaExpected);
+        assertEquals(pessoa.getEmail(), pessoaExpected.getEmail());
+    }
+
+    @Test
+    @DisplayName("Deveria Retornar uma exceção quando o metodo encontrarPessoaPorId nao encontrar uma pessoa")
+    void encontrarPessoaPorId_cenario02() {
+        //Arrange / Given
+        Long id = 1L;
+        given(pessoaRepository.findById(id)).willReturn(Optional.empty());
+        //Act When && assert / Then
+        assertThrows(IdNotFoundException.class, () -> pessoaService.encontrarPessoaPorId(id));
+
+
     }
 }
