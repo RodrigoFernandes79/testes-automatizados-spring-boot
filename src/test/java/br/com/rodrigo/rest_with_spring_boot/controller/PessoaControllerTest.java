@@ -61,7 +61,7 @@ class PessoaControllerTest {
     }
 
     @Test
-    @DisplayName("Deveria retornar status 200 created e retorna Lista de Pessoas salvas")
+    @DisplayName("Deveria retornar status 200 OK e retorna Lista de Pessoas salvas")
     void listarPessoas() throws Exception {
         //Arrange / Given
         List<Pessoa> pessoaList = new ArrayList<>();
@@ -75,6 +75,24 @@ class PessoaControllerTest {
                 .andExpect(jsonPath("$.size()").value(pessoaList.size())) // Verifica o tamanho da lista
                 .andExpect(jsonPath("$[0].primeiroNome").value(pessoa.getPrimeiroNome())) // Verifica o primeiro nome da pessoa
                 .andExpect(jsonPath("$[0].email").value(pessoa.getEmail())); // Verifica o email da pessoa
+
+        assertNotNull(response);
+
+    }
+
+    @Test
+    @DisplayName("Deveria retornar status 200 OK e retorna um Objeto Pessoa pelo id")
+    void listarPessoaPorId_cenario01() throws Exception {
+        //Arrange / Given
+        Long id = 1L;
+        given(pessoaService.encontrarPessoaPorId(id)).willReturn(pessoa);
+        //Act / when
+        var response = mockMvc.perform(get("/pessoas/{id}", id))
+
+                //Assertions / then
+                .andExpect(status().isOk())// Verifica o status HTTP 200
+                .andExpect(jsonPath("$.primeiroNome").value(pessoa.getPrimeiroNome())) // Verifica o primeiro nome da pessoa
+                .andExpect(jsonPath("$.email").value(pessoa.getEmail())); // Verifica o email da pessoa
 
         assertNotNull(response);
 
