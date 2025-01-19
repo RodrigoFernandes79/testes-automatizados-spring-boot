@@ -13,9 +13,13 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -55,5 +59,25 @@ class PessoaControllerTest {
         assertNotNull(response);
 
     }
-    
+
+    @Test
+    @DisplayName("Deveria retornar status 200 created e retorna Lista de Pessoas salvas")
+    void listarPessoas() throws Exception {
+        //Arrange / Given
+        List<Pessoa> pessoaList = new ArrayList<>();
+        pessoaList.add(pessoa);
+        given(pessoaService.listarPessoas()).willReturn(pessoaList);
+        //Act / when
+        var response = mockMvc.perform(get("/pessoas"))
+
+                //Assertions / then
+                .andExpect(status().isOk()) // Verifica o status HTTP 200
+                .andExpect(jsonPath("$.size()").value(pessoaList.size())) // Verifica o tamanho da lista
+                .andExpect(jsonPath("$[0].primeiroNome").value(pessoa.getPrimeiroNome())) // Verifica o primeiro nome da pessoa
+                .andExpect(jsonPath("$[0].email").value(pessoa.getEmail())); // Verifica o email da pessoa
+
+        assertNotNull(response);
+
+    }
+
 }
