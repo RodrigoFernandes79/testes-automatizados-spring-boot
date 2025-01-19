@@ -21,9 +21,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyLong;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
-import static org.mockito.Mockito.mock;
+import static org.mockito.BDDMockito.*;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PessoaServiceTest {
@@ -126,10 +125,25 @@ class PessoaServiceTest {
         pessoa.setEmail("erudio@email");
         given(pessoaRepository.save(pessoa)).willReturn(pessoa);
         //Act
-        Pessoa pessoaUpdated= pessoaService.atualizarPessoa(1L, pessoa);
+        Pessoa pessoaUpdated = pessoaService.atualizarPessoa(1L, pessoa);
         //Assert / Then
         assertNotNull(pessoaUpdated);
         assertEquals(pessoa.getPrimeiroNome(), pessoaUpdated.getPrimeiroNome());
         assertEquals(pessoa.getEmail(), pessoaUpdated.getEmail());
+    }
+
+    @Test
+    @DisplayName("Deveria deletar a pessoa quando o metodo deletarPessoa for chamado")
+    void deletarPessoa() {
+        //Arrange / Given
+        Long id = 1L;
+        given(pessoaRepository.findById(id)).willReturn(Optional.of(pessoa));
+        willDoNothing().given(pessoaRepository).delete(pessoa);
+        //Act / When
+        pessoaService.deletarPessoa(id);
+        //Assert / Then
+        then(pessoaRepository).should().delete(pessoa);
+        verify(pessoaRepository,times(1)).delete(pessoa);
+        verify(pessoa, never()).getEmail();
     }
 }
