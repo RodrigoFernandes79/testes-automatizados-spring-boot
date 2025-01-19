@@ -19,7 +19,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -148,6 +150,20 @@ class PessoaControllerTest {
 
                 //Assertions / then
                 .andExpect(status().isNotFound());// Verifica o status HTTP 200
+
+    }
+    @Test
+    @DisplayName("Deveria retornar status  no content quando deletar uma pessoa pelo id")
+    void deletarPessoaPorId() throws Exception {
+        //Arrange / Given
+        Long id = 1L;
+        given(pessoaService.encontrarPessoaPorId(id)).willReturn(pessoa);
+        willDoNothing().given(pessoaService).deletarPessoa(anyLong());
+        //Act / when
+        var response = mockMvc.perform(delete("/pessoas/{id}", id))
+
+                //Assertions / then
+                .andExpect(status().isNoContent());// Verifica o status HTTP 200
 
     }
 
