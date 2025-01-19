@@ -20,8 +20,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -110,7 +109,27 @@ class PessoaControllerTest {
 
                 //Assertions / then
                 .andExpect(status().isNotFound());// Verifica o status HTTP 404
-        
+
+    }
+
+    @Test
+    @DisplayName("Deveria retornar status 200 OK e atualiza Pessoa pelo id")
+    void atualizarPessoa_cenario01() throws Exception {
+        //Arrange / Given
+        Long id = 1L;
+        given(pessoaService.encontrarPessoaPorId(id)).willReturn(pessoa);
+        Pessoa pessoaAtualizada = new Pessoa("Erudio", "Silva",
+                "Outra rua qualquer", "masculino", "erudio@email.com");
+        given(pessoaService.atualizarPessoa(any(), any(Pessoa.class))).willReturn(pessoaAtualizada);
+        //Act / when
+        var response = mockMvc.perform(put("/pessoas/{id}", id)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(pessoaJacksonTester.write(pessoaAtualizada).getJson()))
+
+                //Assertions / then
+                .andExpect(status().isOk())// Verifica o status HTTP 200
+                .andExpect(jsonPath("$.primeiroNome").value(pessoaAtualizada.getPrimeiroNome())) // Verifica o primeiro nome da pessoa
+                .andExpect(jsonPath("$.email").value(pessoaAtualizada.getEmail())); // Verifica o email da pessoa
 
     }
 
