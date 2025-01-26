@@ -217,4 +217,19 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals("masculino", pessoaEncontrada2.getGenero());
         assertEquals("jonatas@uol.com.br", pessoaEncontrada2.getEmail());
     }
+
+    @Test
+    @Order(5) // Sera o quinto metodo a ser testado
+    @DisplayName("Testes de integracao quando informar o id de uma pessoa deveria deletar um objeto Pessoa")
+    void deletarPessoaPorIdIntegrationTest() throws IOException {
+        //Arrange / Given
+        given().spec(specification) //dada a especificacao criada acima (specification)
+                .pathParam("id", pessoa.getId()) //colocando a variavel id como parametro
+                .when() //Act / When
+                .delete("{id}") // metodo get passando a variavel id como parametro
+                .then() //assert / Then
+                .statusCode(204);//verifica se o status code é 204 NO CONTENt
+
+
+    }
 }
