@@ -49,6 +49,7 @@ public class PessoaService {
         pessoaEntity.setUltimoNome(pessoa.getUltimoNome());
         pessoaEntity.setEndereco(pessoa.getEndereco());
         pessoaEntity.setGenero(pessoa.getGenero());
+        pessoaEntity.setEmail(pessoa.getEmail());
 
         return pessoaRepository.save(pessoaEntity);
     }
