@@ -72,9 +72,51 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertNotNull(pessoaCriada.getGenero());
 
         assertTrue(pessoaCriada.getId() > 0);
+        assertEquals("Inaldinho", pessoaCriada.getPrimeiroNome());
         assertEquals("Silva", pessoaCriada.getUltimoNome());
         assertEquals("Rua qualquer", pessoaCriada.getEndereco());
         assertEquals("masculino", pessoaCriada.getGenero());
         assertEquals("inaldinho@email.com", pessoaCriada.getEmail());
+    }
+
+    @Test
+    @Order(2) // Sera o segundo metodo a ser testado
+    @DisplayName("Testes de integracao quando Atualizar uma pessoa deveria retornar um objeto Pessoa Atualizado")
+    void atualizarPessoaIntegrationTest() throws IOException {
+        //Arrange / Given
+        //atualizando o nome e email da pessoa
+        pessoa.setPrimeiroNome("Juquinha");
+        pessoa.setEmail("juquinha@bol.com.br");
+
+        String content = given().spec(specification) //dada a especificacao criada acima (specification)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)//conteudo em formato json
+                .pathParam("id", pessoa.getId()) //colocando a variavel id como parametro
+                .body(pessoa)//atualiza o objeto pessoa no corpo da requisicao
+                .when() //Act / When
+                .put("{id}") // metodo do update passando a variavel id como parametro
+                .then() //assert / Then
+                .statusCode(200)//verifica se o status code é 200 OK
+                .extract()//extraia o  resultado em formato de string
+                .body().asString();
+
+        Pessoa pessoaAtualizada = objectMapper.readValue(content, Pessoa.class); /* o content recebe uma string em formato de json,
+         entao uso o object mapper para ler os valores em objeto. */
+
+        pessoa = pessoaAtualizada; /* estamos atribuindo a resosta do objeto pessoaCriada em pessoa
+         para reaproveitarmos os dados em outros metoodos */
+        //assert / Then
+        assertNotNull(pessoaAtualizada);
+        assertNotNull(pessoaAtualizada.getId());
+        assertNotNull(pessoaAtualizada.getUltimoNome());
+        assertNotNull(pessoaAtualizada.getEmail());
+        assertNotNull(pessoaAtualizada.getEndereco());
+        assertNotNull(pessoaAtualizada.getGenero());
+
+        assertTrue(pessoaAtualizada.getId() > 0);
+        assertEquals("Juquinha", pessoaAtualizada.getPrimeiroNome());
+        assertEquals("Silva", pessoaAtualizada.getUltimoNome());
+        assertEquals("Rua qualquer", pessoaAtualizada.getEndereco());
+        assertEquals("masculino", pessoaAtualizada.getGenero());
+        assertEquals("juquinha@bol.com.br", pessoaAtualizada.getEmail());
     }
 }
