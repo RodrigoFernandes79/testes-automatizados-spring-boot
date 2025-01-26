@@ -119,4 +119,36 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals("masculino", pessoaAtualizada.getGenero());
         assertEquals("juquinha@bol.com.br", pessoaAtualizada.getEmail());
     }
+    @Test
+    @Order(3) // Sera o terceiro metodo a ser testado
+    @DisplayName("Testes de integracao quando informar o id de uma pessoa deveria retornar um objeto Pessoa")
+    void encontrarPessoaPorIdIntegrationTest() throws IOException {
+        //Arrange / Given
+        String content = given().spec(specification) //dada a especificacao criada acima (specification)
+                .pathParam("id", pessoa.getId()) //colocando a variavel id como parametro
+                .when() //Act / When
+                .get("{id}") // metodo get passando a variavel id como parametro
+                .then() //assert / Then
+                .statusCode(200)//verifica se o status code é 200 OK
+                .extract()//extraia o  resultado em formato de string
+                .body().asString();
+
+        Pessoa pessoaEncontrada = objectMapper.readValue(content, Pessoa.class); /* o content recebe uma string em formato de json,
+         entao uso o object mapper para ler os valores em objeto. */
+
+        //assert / Then
+        assertNotNull(pessoaEncontrada);
+        assertNotNull(pessoaEncontrada.getId());
+        assertNotNull(pessoaEncontrada.getUltimoNome());
+        assertNotNull(pessoaEncontrada.getEmail());
+        assertNotNull(pessoaEncontrada.getEndereco());
+        assertNotNull(pessoaEncontrada.getGenero());
+
+        assertTrue(pessoaEncontrada.getId() > 0);
+        assertEquals("Juquinha", pessoaEncontrada.getPrimeiroNome());
+        assertEquals("Silva", pessoaEncontrada.getUltimoNome());
+        assertEquals("Rua qualquer", pessoaEncontrada.getEndereco());
+        assertEquals("masculino", pessoaEncontrada.getGenero());
+        assertEquals("juquinha@bol.com.br", pessoaEncontrada.getEmail());
+    }
 }
