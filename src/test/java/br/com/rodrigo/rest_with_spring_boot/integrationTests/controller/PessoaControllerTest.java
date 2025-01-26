@@ -10,10 +10,13 @@ import io.restassured.filter.log.ResponseLoggingFilter;
 import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.testcontainers.shaded.com.fasterxml.jackson.core.type.TypeReference;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.DeserializationFeature;
 import org.testcontainers.shaded.com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.junit.jupiter.api.Assertions.*;
@@ -119,6 +122,7 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals("masculino", pessoaAtualizada.getGenero());
         assertEquals("juquinha@bol.com.br", pessoaAtualizada.getEmail());
     }
+
     @Test
     @Order(3) // Sera o terceiro metodo a ser testado
     @DisplayName("Testes de integracao quando informar o id de uma pessoa deveria retornar um objeto Pessoa")
@@ -150,5 +154,67 @@ class PessoaControllerTest extends AbstractIntegrationTest {
         assertEquals("Rua qualquer", pessoaEncontrada.getEndereco());
         assertEquals("masculino", pessoaEncontrada.getGenero());
         assertEquals("juquinha@bol.com.br", pessoaEncontrada.getEmail());
+    }
+
+    @Test
+    @Order(4) // Sera o quarto metodo a ser testado
+    @DisplayName("Testes de integracao  deveria retornar uma lista de pessoas")
+    void listarPessoasIntegrationTest() throws IOException {
+        //Arrange / Given
+        List<Pessoa> listaDePessoas = new ArrayList<>();
+        Pessoa pessoa2 = new Pessoa("Jonathas", "Pereira",
+                "Outra rua qualquer", "masculino", "jonatas@uol.com.br");
+        //setando no banco de dados a pessoa2:
+        given().spec(specification) //dada a especificacao criada acima (specification)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .body(pessoa2)
+                .when() //Act / When
+                .post();
+
+        String content = given().spec(specification) //dada a especificacao criada acima (specification)
+                .when() //Act / When
+                .get() // metodo get
+                .then() //assert / Then
+                .statusCode(200)//verifica se o status code é 200 OK
+                .extract()//extraia o  resultado em formato de string
+                .body().asString();
+        List<Pessoa> pessoaEncontradaLista = objectMapper.readValue(content, new TypeReference<List<Pessoa>>() {
+        }); /* o content recebe uma string em formato de json,
+         entao uso o object mapper para ler os valores em objeto, tendo como segundo parametro uma lista. */
+
+        Pessoa pessoaEncontrada1 = pessoaEncontradaLista.get(0);
+
+        //assert / Then
+        assertNotNull(pessoaEncontrada1);
+        assertNotNull(pessoaEncontrada1.getId());
+        assertNotNull(pessoaEncontrada1.getPrimeiroNome());
+        assertNotNull(pessoaEncontrada1.getUltimoNome());
+        assertNotNull(pessoaEncontrada1.getEmail());
+        assertNotNull(pessoaEncontrada1.getEndereco());
+        assertNotNull(pessoaEncontrada1.getGenero());
+
+        assertTrue(pessoaEncontrada1.getId() > 0);
+        assertEquals("Juquinha", pessoaEncontrada1.getPrimeiroNome());
+        assertEquals("Silva", pessoaEncontrada1.getUltimoNome());
+        assertEquals("Rua qualquer", pessoaEncontrada1.getEndereco());
+        assertEquals("masculino", pessoaEncontrada1.getGenero());
+        assertEquals("juquinha@bol.com.br", pessoaEncontrada1.getEmail());
+
+        Pessoa pessoaEncontrada2 = pessoaEncontradaLista.get(1);
+
+        assertNotNull(pessoaEncontrada2);
+        assertNotNull(pessoaEncontrada2.getId());
+        assertNotNull(pessoaEncontrada2.getPrimeiroNome());
+        assertNotNull(pessoaEncontrada2.getUltimoNome());
+        assertNotNull(pessoaEncontrada2.getEmail());
+        assertNotNull(pessoaEncontrada2.getEndereco());
+        assertNotNull(pessoaEncontrada2.getGenero());
+
+        assertTrue(pessoaEncontrada2.getId() > 0);
+        assertEquals("Jonathas", pessoaEncontrada2.getPrimeiroNome());
+        assertEquals("Pereira", pessoaEncontrada2.getUltimoNome());
+        assertEquals("Outra rua qualquer", pessoaEncontrada2.getEndereco());
+        assertEquals("masculino", pessoaEncontrada2.getGenero());
+        assertEquals("jonatas@uol.com.br", pessoaEncontrada2.getEmail());
     }
 }
